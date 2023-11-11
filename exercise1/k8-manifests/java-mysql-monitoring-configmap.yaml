@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: java-mysql-monitoring-configmap
+data:
+  dbServer: "mysql-primary"
+  dbName: "db"

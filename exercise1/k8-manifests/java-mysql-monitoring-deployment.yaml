@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-mysql-monitoring-deployment
+  labels:
+    app: java-mysql-monitoring-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: java-mysql-monitoring-deployment
+  template:
+    metadata:
+      labels:
+        app: java-mysql-monitoring-deployment
+    spec:
+      containers:
+        - name: java-mysql-monitoring
+          image: garstiops/garstiges-secret-repo:java-mysql-monitoring-1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_USER
+              value: "root"
+            - name: DB_PWD
+              value: "root"
+            - name: DB_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  key: dbServer
+                  name: java-mysql-monitoring-configmap
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: dbName
+                  name: java-mysql-monitoring-configmap
+      imagePullSecrets:
+        - name: regcred

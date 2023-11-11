@@ -5,7 +5,20 @@ auth:
   username: my-user
   password: my-pass
 
+volumePermissions:
+  enabled: true
+
+primary:
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 15
+    successThreshold: 1
+
 secondary:
   replicaCount: 2
   persistence:
-    storageClass: standard
+    accessModes: ["ReadWriteOnce"]
+    storageClass: linode-block-storage

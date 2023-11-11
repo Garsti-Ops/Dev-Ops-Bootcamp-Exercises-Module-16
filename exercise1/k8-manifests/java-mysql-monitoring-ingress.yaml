@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: java-mysql-monitoring-ingress
+spec:
+  rules:
+    - host: monitoring-target.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: java-mysql-monitoring-service
+                port:
+                  number: 8080

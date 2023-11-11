@@ -1,0 +1,16 @@
+# Get a K8s-Cluster on Linode and setup config
+export KUBECONFIG=/home/cheider/workspace/devops-bootcamp/exercises/Dev-Ops-Bootcamp-Exercises-Module-16/Exercise-Cluster-kubeconfig.yaml
+
+# Only allow my user to read the kubeconfig
+sudo chmod 400 Exercise-Cluster-kubeconfig.yaml
+
+# Install Helm Chart for Mysql
+helm install mysql oci://registry-1.docker.io/bitnamicharts/mysql -f exercise1/mysql-values.yaml
+
+# Create ImagePullSecret for Cluster
+kubectl create secret generic regcred --from-file=.dockerconfigjson=/home/cheider/.docker/config.json --type=kubernetes.io/dockerconfigjson
+
+# Deploy the Java App
+kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-secret.yaml
+kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-configmap.yaml
+kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-deployment.yaml
