@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mysql-rules
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus-stack
+spec:
+  groups:
+    - name: mysql.rules
+      rules:
+        - alert: MysqlInstanceDown
+          expr: mysql_up == 0
+          for: 0m
+          labels:
+            severity: critical
+          annotations:
+            summary: Mysql is down (instance {{ $labels.instance }})
+            description: "MySQL-Instance {{ $labels.instance }} is down\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: MysqlTooManyConnections
+          expr: max_over_time(mysql_global_status_threads_connected[1m]) / mysql_global_variables_max_connections * 100 > 80
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: Too many MySQL connections (> 80%) on (instance {{ $labels.instance }})
+            description: "80% or more connections on MySQL Instance {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

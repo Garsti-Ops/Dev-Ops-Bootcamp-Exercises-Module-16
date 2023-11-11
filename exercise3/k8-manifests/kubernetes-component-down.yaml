@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kubernetes-rules
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus-stack
+spec:
+  groups:
+    - name: kubernetes.rules
+      rules:
+        - alert: StatefulsetsDown
+          expr: (kube_statefulset_status_replicas_ready / kube_statefulset_status_replicas_current) != 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: StatefulSet (instance {{ $labels.instance }}) is down!
+            description: "StatefulSet is DOWN\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

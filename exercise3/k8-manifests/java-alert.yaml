@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: java-rules
+  labels:
+    app: kube-prometheus-stack
+    release: prometheus-stack
+spec:
+  groups:
+    - name: java.rules
+      rules:
+        - alert: ToManyJavaConnections
+          expr: (rate(java_app_http_requests_total[1m])) * 100) > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            description: To many connections to Java app (> 80%) (instance {{ $labels.instance }})
+            summary: "80% or more connections to Java app used {{ $labels.instance }}\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
