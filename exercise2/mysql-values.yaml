@@ -1,0 +1,35 @@
+architecture: replication
+auth:
+  rootPassword: root
+  database: db
+  username: my-user
+  password: my-pass
+
+volumePermissions:
+  enabled: true
+
+primary:
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "9000"
+  startupProbe:
+    enabled: true
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 15
+    successThreshold: 1
+
+secondary:
+  replicaCount: 2
+  persistence:
+    accessModes: ["ReadWriteOnce"]
+    storageClass: linode-block-storage
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    additionalLabels:
+      release: prometheus-stack

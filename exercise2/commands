@@ -1,0 +1,9 @@
+# Deploy Prometheus
+kubectl create namespace monitoring
+helm install prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring
+
+# Deploy Scraping for Java App
+kubectl apply -f exercise2/k8-manifests/java-mysql-monitoring-service-monitor.yaml
+
+# Deploy Scraping for Mysql Chart
+kubectl apply -f exercise2/k8-manifests/mysql-chart-service-monitor.yaml

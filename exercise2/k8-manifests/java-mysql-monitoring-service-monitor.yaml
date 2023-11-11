@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: java-mysql-monitoring-service-monitor
+  labels:
+    release: prometheus-stack
+    app: java-mysql-monitoring-service-monitor
+spec:
+  endpoints:
+    - interval: 20s
+      targetPort: metrics
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: java-mysql-monitoring-deployment
