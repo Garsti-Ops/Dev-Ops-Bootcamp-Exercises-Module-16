@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: main-rules-alert-config
+  namespace: monitoring
+spec:
+  route:
+    - receiver: 'email'
+      repeatInterval: 30m
+      routes:
+        - matchers:
+            - name: alertname
+              value: NginxToMany4XXErrors
+            - name: alertname
+              value: StatefulsetsDown
+    - receiver: 'slack'
+      repeatInterval: 30m
+      routes:
+        - matchers:
+            - name: alertname
+              value: ToManyJavaConnections
+            - name: alertname
+              value: MysqlInstanceDown
+            - name: alertname
+              value: MysqlTooManyConnections
+  receivers:
+    - name: 'email'
+      emailConfigs:
+        - to: 'christoph.heider@vema-eg.de'
+          from: 'christoph.heider.vemaeg@gmail.com'
+          smarthost: 'smtp.gmail.com:587'
+          authUsername: 'christoph.heider.vemaeg@gmail.com'
+          authPassword:
+            name: gmail-auth
+            key: password
+    - name: 'slack'
+      slackConfigs:
+      - channel: '#alerts'
+        apiURL:
+          name: slack-auth
+          key: slack_url
+        title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Alert'
+        text: >-
+          {{ range .Alerts }}
+            *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+            *Description:* {{ .Annotations.description }}
+            *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+          {{ end }}
+
