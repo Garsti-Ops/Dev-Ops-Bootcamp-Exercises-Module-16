@@ -14,3 +14,9 @@ kubectl create secret generic regcred --from-file=.dockerconfigjson=/home/cheide
 kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-secret.yaml
 kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-configmap.yaml
 kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-deployment.yaml
+
+# Deploy Ingress Controller
+helm install ingress-nginx ingress-nginx/ingress-nginx
+
+# Deploy Ingress
+kubectl apply -f exercise1/k8-manifests/java-mysql-monitoring-ingress.yaml
